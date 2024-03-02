@@ -16,7 +16,7 @@ class CreateMainForm extends Component
 
     public function save()
     {
-        //$this->validate();
+        $this->form->store();
 
         return $this->redirect('/');
     }
@@ -24,6 +24,7 @@ class CreateMainForm extends Component
     {
         return view('livewire.create-main-form')->with([
             'maritalStatuses' => UserMaritalStatus::getLocalized(),
+            'countryPhoneCodes' => collect(MainForm::$countryPhoneCodes),
         ]);
     }
 
@@ -34,12 +35,16 @@ class CreateMainForm extends Component
             return;
         }
 
+        // TODO: use $this->form->phones instead of $this->phoneInputCounter
         $this->currentPhoneCounter++;
         $this->phoneInputCounter[$this->currentPhoneCounter] = $this->currentPhoneCounter;
+        $this->form->phonesCountry[$this->currentPhoneCounter] = '(99) 999-99-99';
     }
 
     public function removePhone($idx)
     {
         unset($this->phoneInputCounter[$idx]);
+        unset($this->form->phones[$idx]);
+        unset($this->form->phonesCountry[$idx]);
     }
 }
