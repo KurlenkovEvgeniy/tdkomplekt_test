@@ -37,20 +37,8 @@ class UserFactory extends Factory
             'middle_name' => $middleName,
             'email' => $this->faker->unique()->safeEmail(),
             'marital_status' => UserMaritalStatus::randomValue(),
+            'birthday' => $this->faker->date(),
             'about' => $this->faker->text(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }

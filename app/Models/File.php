@@ -10,6 +10,15 @@ class File extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'original_name',
+        'path',
+        'mime_type',
+        'disk',
+        'size',
+        'collection_name',
+    ];
+
     public function model(): MorphTo
     {
         return $this->morphTo();

@@ -63,13 +63,15 @@ class RequiredOneOfArrayWithout implements DataAwareRule, ValidatorAwareRule, Va
         }
 
         if (!$fullResult) {
-            $clearAttr = preg_replace('/\.[0-9]+$/', '', $attribute);
-            if (!is_array($this->data[$clearAttr])) {
-                throw new \UnexpectedValueException("Attribute '$clearAttr' is not an array");
+            $array = [];
+            if (preg_match('/(.+)\.[0-9]+\.(.+)$/', $attribute, $matches)) {
+                $attr = $matches[1];
+                $field = $matches[2];
+                $array = array_column($this->data[$attr], $field);
             }
 
-            foreach ($this->data[$clearAttr] as $keyData => $datum) {
-                if ($this->validator->validateRequired("$clearAttr.$keyData", $datum)) {
+            foreach ($array as $keyData => $datum) {
+                if ($this->validator->validateRequired("$attr.$keyData.$field", $datum)) {
                     return;
                 }
             }

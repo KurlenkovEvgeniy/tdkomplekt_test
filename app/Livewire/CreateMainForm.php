@@ -5,20 +5,21 @@ namespace App\Livewire;
 use App\Enums\UserMaritalStatus;
 use App\Livewire\Forms\MainForm;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CreateMainForm extends Component
 {
+    use WithFileUploads;
 
     public MainForm $form;
 
-    public $phoneInputCounter = [1];
-    public $currentPhoneCounter = 1;
+    public $isSuccess = false;
 
     public function save()
     {
         $this->form->store();
 
-        return $this->redirect('/');
+        $this->isSuccess = true;
     }
     public function render()
     {
@@ -28,23 +29,29 @@ class CreateMainForm extends Component
         ]);
     }
 
-    public function addPhone()
+    public function mount()
     {
-        if (count($this->phoneInputCounter) >= 5) {
+        $this->form->userPhones[] = [
+            'number' => '',
+            'phone_country_id' => 1 // TODO: real default value
+        ];
+    }
+
+    public function addUserPhone()
+    {
+        if (count($this->form->userPhones) >= 5) {
             $this->skipRender();
             return;
         }
 
-        // TODO: use $this->form->phones instead of $this->phoneInputCounter
-        $this->currentPhoneCounter++;
-        $this->phoneInputCounter[$this->currentPhoneCounter] = $this->currentPhoneCounter;
-        $this->form->phonesCountry[$this->currentPhoneCounter] = '(99) 999-99-99';
+        $this->form->userPhones[] = [
+            'number' => '',
+            'phone_country_id' => 1 // TODO: real default value
+        ];
     }
 
-    public function removePhone($idx)
+    public function removeUserPhone($idx)
     {
-        unset($this->phoneInputCounter[$idx]);
-        unset($this->form->phones[$idx]);
-        unset($this->form->phonesCountry[$idx]);
+        unset($this->form->userPhones[$idx]);
     }
 }

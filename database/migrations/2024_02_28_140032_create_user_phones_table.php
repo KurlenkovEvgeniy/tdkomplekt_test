@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('number');
+            $table->unsignedBigInteger('phone_country_id'); // foreignId
             $table->timestamps();
         });
     }

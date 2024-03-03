@@ -42,26 +42,28 @@ class RequiredWithoutArray implements DataAwareRule, ValidatorAwareRule, Validat
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $translatedAttrs = [];
-        foreach ($this->attributes as $attr) {
-            $translatedAttrs[] = Lang::get("validation.attributes.$attr");
-        }
 
         $fullResult = false;
         foreach ($this->attributes as $requiredAttribute) {
-            if (!isset($this->data[$requiredAttribute])) {
-                throw new \OutOfBoundsException("Attribute '$requiredAttribute' doesn't present in data");
+            if (preg_match('/(.+)\.\*\.(.+)/', $requiredAttribute, $matches)) {
+                $attr = $matches[1];
+                $field = $matches[2];
             }
-            if (!is_array($this->data[$requiredAttribute])) {
-                throw new \UnexpectedValueException("Attribute '$requiredAttribute' is not an array");
+            if (empty($field) || empty($attr)) {
+                throw new \UnexpectedValueException("Attribute '$requiredAttribute' doesn't match attr.*.field pattern");
+            }
+            if (!isset($this->data[$attr])) {
+                throw new \OutOfBoundsException("Attribute '$attr' doesn't present in data");
             }
 
+            $translatedAttrs[] = Lang::get("validation.attributes.$attr");
+
             $result = false;
-            foreach ($this->data[$requiredAttribute] as $keyData => $datum) {
-                $result = $this->validator->validateRequired("$requiredAttribute.$keyData", $datum);
+            foreach ($this->data[$attr] as $keyData => $datum) {
+                $result = $this->validator->validateRequired("$attr.$keyData.$field", $datum[$field]);
                 // Check only the first encountered required array item, the rest validation is rest upon attribute's rules
                 if ($result) break;
             }
-
             // we don't need to check all the provided attributes
             if ($this->isAll !== 'all' && !$result && !$this->validator->validateRequired($attribute, $value)) {
                 $fail('validation.required_without_array')->translate(['values' => implode(',', $translatedAttrs)]);

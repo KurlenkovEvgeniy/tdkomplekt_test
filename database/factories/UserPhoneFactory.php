@@ -19,7 +19,8 @@ class UserPhoneFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'number' => $this->faker->e164PhoneNumber(),
+            'number' => $this->faker->numberBetween(1000000, 9999999),
+            'phone_country_id' => 1,
         ];
     }
 }

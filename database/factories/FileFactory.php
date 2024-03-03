@@ -23,8 +23,8 @@ class FileFactory extends Factory
         return [
             'model_type' => $model,
             'model_id' => $model::factory(),
-            'name' => $this->faker->word() . '.' . $this->faker->fileExtension(),
-            'file_name' => $this->faker->filePath(),
+            'original_name' => $this->faker->word() . '.' . $this->faker->fileExtension(),
+            'path' => $this->faker->filePath(),
             'mime_type' => $this->faker->mimeType(),
             'size' => $this->faker->randomNumber(7, true),
             'collection_name' => $this->faker->word(),

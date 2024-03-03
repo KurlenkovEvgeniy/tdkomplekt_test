@@ -12,16 +12,26 @@ enum UserMaritalStatus: string
     case Divorced = 'divorced';
     case Widow = 'widow';
 
+    public static function getArrayValues(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function getArrayNames(): array
+    {
+        return array_column(self::cases(), 'name');
+    }
+
     public static function randomValue(): string
     {
-        $arr = array_column(self::cases(), 'value');
+        $arr = self::getArrayValues();
 
         return $arr[array_rand($arr)];
     }
 
     public static function randomName(): string
     {
-        $arr = array_column(self::cases(), 'name');
+        $arr = self::getArrayNames();
 
         return $arr[array_rand($arr)];
     }
